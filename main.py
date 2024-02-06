@@ -1,126 +1,123 @@
+import sys
 import os
-import tkinter as tk
-from tkinter import messagebox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QTextEdit, QLineEdit, QPushButton
 from google.cloud import translate_v2 as translate
 from textblob import TextBlob
 from newspaper import Article
 import nltk
-
-# Ensure necessary NLTK data is downloaded
 nltk.download('punkt')
 
-# Set up Google Cloud Translation
+
+# Google Cloud Translation API 설정
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/ryanback/PycharmProjects/Summarize News Articles/json/galvanic-augury-344717-bed5c3b9c77e.json'
 
-# Function to translate text to Korean using Google Cloud Translation API
-def translate_text_to_korean(text):
-    translate_client = translate.Client()
-    result = translate_client.translate(text, target_language='ko')
-    translated_text = result['translatedText']
-    # Replace HTML entities with normal quotes
-    translated_text = translated_text.replace('&quot;', '"')
-    return translated_text
+class NewsSummarizer(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
-# Function to summarize the article
-def summarize():
-    url = utext.get('1.0', "end").strip()
-    if not url.startswith('http://') and not url.startswith('https://'):
-        messagebox.showerror("Error", "Please enter a valid URL.")
-        return
+    def initUI(self):
+        self.setGeometry(100, 100, 800, 600)
+        self.setWindowTitle('News Summarizer and Translator')
 
-    try:
-        article = Article(url)
-        article.download()
-        article.parse()
-        article.nlp()
+        layout = QVBoxLayout()
 
-        title.config(state='normal')
-        author.config(state='normal')
-        publication.config(state='normal')
-        summary.config(state='normal')
-        translated_summary.config(state='normal')
-        sentiment.config(state='normal')
+        self.url_label = QLabel('Article URL:')
+        layout.addWidget(self.url_label)
 
-        title.delete('1.0','end')
-        author.delete('1.0','end')
-        publication.delete('1.0','end')
-        summary.delete('1.0','end')
-        translated_summary.delete('1.0','end')
-        sentiment.delete('1.0', 'end')
+        self.url_input = QLineEdit()
+        layout.addWidget(self.url_input)
 
-        title.insert('1.0', article.title)
-        author.insert('1.0', ', '.join(article.authors))
-        publication.insert('1.0', str(article.publish_date))
-        summary.insert('1.0', article.summary)
-        translated_summary.insert('1.0', translate_text_to_korean(article.summary))
+        self.title_label = QLabel('Title:')
+        layout.addWidget(self.title_label)
 
-        analysis = TextBlob(article.text)
-        sentiment.insert('1.0', f'Polarity: {analysis.polarity}, Sentiment: {"positive" if analysis.polarity > 0 else "negative" if analysis.polarity < 0 else "neutral"}')
+        self.title_output = QTextEdit()
+        self.title_output.setReadOnly(True)
+        layout.addWidget(self.title_output)
 
-        title.config(state='disabled')
-        author.config(state='disabled')
-        publication.config(state='disabled')
-        summary.config(state='disabled')
-        translated_summary.config(state='disabled')
-        sentiment.config(state='disabled')
+        self.author_label = QLabel('Author:')
+        layout.addWidget(self.author_label)
 
-    except Exception as e:
-        messagebox.showerror("Error", "Failed to process the article. Please check the URL or your internet connection.")
+        self.author_output = QTextEdit()
+        self.author_output.setReadOnly(True)
+        layout.addWidget(self.author_output)
 
-# GUI Setup
-root = tk.Tk()
-root.title("News Summarizer")
-root.geometry('800x600')
+        self.publication_label = QLabel('Publication Date:')
+        layout.addWidget(self.publication_label)
 
-tlabel = tk.Label(root, text="Title:")
-tlabel.pack()
+        self.publication_output = QTextEdit()
+        self.publication_output.setReadOnly(True)
+        layout.addWidget(self.publication_output)
 
-title = tk.Text(root, height=1, width=100)
-title.config(state='disabled', bg='#dddddd')
-title.pack()
+        self.summary_label = QLabel('Summary:')
+        layout.addWidget(self.summary_label)
 
-alabel = tk.Label(root, text="Author(s):")
-alabel.pack()
+        self.summary_output = QTextEdit()
+        self.summary_output.setReadOnly(True)
+        layout.addWidget(self.summary_output)
 
-author = tk.Text(root, height=1, width=100)
-author.config(state='disabled', bg='#dddddd')
-author.pack()
+        self.translated_summary_label = QLabel('Summary in Korean:')
+        layout.addWidget(self.translated_summary_label)
 
-plabel = tk.Label(root, text="Publication Date:")
-plabel.pack()
+        self.translated_summary_output = QTextEdit()
+        self.translated_summary_output.setReadOnly(True)
+        layout.addWidget(self.translated_summary_output)
 
-publication = tk.Text(root, height=1, width=100)
-publication.config(state='disabled', bg='#dddddd')
-publication.pack()
+        self.sentiment_label = QLabel('Sentiment Analysis:')
+        layout.addWidget(self.sentiment_label)
 
-slable = tk.Label(root, text="Summary:")
-slable.pack()
+        self.sentiment_output = QTextEdit()
+        self.sentiment_output.setReadOnly(True)
+        layout.addWidget(self.sentiment_output)
 
-summary = tk.Text(root, height=10, width=100)
-summary.config(state='disabled', bg='#dddddd')
-summary.pack()
+        self.summarize_button = QPushButton('Summarize and Translate')
+        self.summarize_button.clicked.connect(self.summarize)
+        layout.addWidget(self.summarize_button)
 
-tslabel = tk.Label(root, text="Summary in Korean:")
-tslabel.pack()
+        self.setLayout(layout)
 
-translated_summary = tk.Text(root, height=10, width=100)
-translated_summary.config(state='disabled', bg='#dddddd')
-translated_summary.pack()
+    def summarize(self):
+        url = self.url_input.text()
+        try:
+            article = Article(url)
+            article.download()
+            article.parse()
+            article.nlp()
 
-selabel = tk.Label(root, text="Sentiment Analysis:")
-selabel.pack()
+            self.title_output.setText(article.title)
+            self.author_output.setText(', '.join(article.authors))
+            self.publication_output.setText(str(article.publish_date))
+            self.summary_output.setText(article.summary)
 
-sentiment = tk.Text(root, height=1, width=100)
-sentiment.config(state='disabled', bg='#dddddd')
-sentiment.pack()
+            # Sentiment Analysis
+            analysis = TextBlob(article.text)
+            sentiment = f'Polarity: {analysis.polarity}, Sentiment: {"positive" if analysis.polarity > 0 else "negative" if analysis.polarity < 0 else "neutral"}'
+            self.sentiment_output.setText(sentiment)
 
-ulabel = tk.Label(root, text="URL:")
-ulabel.pack()
+            # Translate summary to Korean
+            translated_summary = self.translate_text_to_korean(article.summary)
+            self.translated_summary_output.setText(translated_summary)
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
-utext = tk.Text(root, height=1, width=100)
-utext.pack()
+    def translate_text_to_korean(self, text):
+        translate_client = translate.Client()
+        result = translate_client.translate(text, target_language='ko')
+        translated_text = result['translatedText']
 
-btn = tk.Button(root, text="Summarize", command=summarize)
-btn.pack()
+        # HTML entities changes
+        translated_text = translated_text.replace('&quot;', '"')
+        translated_text = translated_text.replace('&#39;', "'")
+        translated_text = translated_text.replace('&amp;', '&')
 
-root.mainloop()
+        return translated_text
+
+
+def main():
+    app = QApplication(sys.argv)
+    ex = NewsSummarizer()
+    ex.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
