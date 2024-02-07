@@ -26,12 +26,15 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.url_label)
 
         self.url_input = QLineEdit()
+        self.url_input.setFixedHeight(30)  # Set fixed height for QLineEdit
+
         layout.addWidget(self.url_input)
 
         self.title_label = QLabel('Title:')
         layout.addWidget(self.title_label)
 
         self.title_output = QTextEdit()
+        self.title_output.setFixedHeight(30)
         self.title_output.setReadOnly(True)
         layout.addWidget(self.title_output)
 
@@ -39,6 +42,7 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.author_label)
 
         self.author_output = QTextEdit()
+        self.author_output.setFixedHeight(30)
         self.author_output.setReadOnly(True)
         layout.addWidget(self.author_output)
 
@@ -46,6 +50,7 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.publication_label)
 
         self.publication_output = QTextEdit()
+        self.publication_output.setFixedHeight(30)
         self.publication_output.setReadOnly(True)
         layout.addWidget(self.publication_output)
 
@@ -53,6 +58,8 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.summary_label)
 
         self.summary_output = QTextEdit()
+        self.summary_output.setFixedHeight(80)
+
         self.summary_output.setReadOnly(True)
         layout.addWidget(self.summary_output)
 
@@ -60,6 +67,8 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.translated_summary_label)
 
         self.translated_summary_output = QTextEdit()
+        self.translated_summary_output.setFixedHeight(80)
+
         self.translated_summary_output.setReadOnly(True)
         layout.addWidget(self.translated_summary_output)
 
@@ -67,6 +76,8 @@ class NewsSummarizer(QWidget):
         layout.addWidget(self.sentiment_label)
 
         self.sentiment_output = QTextEdit()
+        self.sentiment_output.setFixedHeight(30)
+
         self.sentiment_output.setReadOnly(True)
         layout.addWidget(self.sentiment_output)
 
