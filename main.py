@@ -8,7 +8,7 @@ import nltk
 nltk.download('punkt')
 
 
-# Google Cloud Translation API 설정
+# Google Cloud Translation API
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/Users/ryanback/PycharmProjects/Summarize News Articles/json/galvanic-augury-344717-bed5c3b9c77e.json'
 
 class NewsSummarizer(QWidget):
