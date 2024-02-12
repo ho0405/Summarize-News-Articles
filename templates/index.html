@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Summarizer and Translator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <form action="/summarize" method="post">
+        <label for="url">Article URL:</label>
+        <input type="text" id="url" name="url">
+        <button type="submit">Summarize and Translate</button>
+    </form>
+</body>
+</html>

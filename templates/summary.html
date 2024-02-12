@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <h1>Title: {{ title }}</h1>
+    <p>Authors: {{ authors }}</p>
+    <p>Publication Date: {{ publication_date }}</p>
+    <h2>Summary:</h2>
+    <p>{{ summary }}</p>
+    <h2>Translated Summary:</h2>
+    <p>{{ translated_summary }}</p>
+    <h2>Sentiment Analysis:</h2>
+    <p>{{ sentiment }}</p>
+</body>
+</html>
